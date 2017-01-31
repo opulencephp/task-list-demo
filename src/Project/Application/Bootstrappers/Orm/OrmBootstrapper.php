@@ -1,6 +1,7 @@
 <?php
 namespace Project\Application\Bootstrappers\Orm;
 
+use Opulence\Databases\ConnectionPools\ConnectionPool;
 use Opulence\Databases\IConnection;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
@@ -14,7 +15,12 @@ use Opulence\Orm\Ids\Accessors\IIdAccessorRegistry;
 use Opulence\Orm\Ids\Generators\IdGeneratorRegistry;
 use Opulence\Orm\Ids\Generators\IIdGeneratorRegistry;
 use Opulence\Orm\IUnitOfWork;
+use Opulence\Orm\Repositories\IRepository;
+use Opulence\Orm\Repositories\Repository;
 use Opulence\Orm\UnitOfWork;
+use Project\Application\Http\Controllers\Tasks;
+use Project\Infrastructure\Tasks\Repositories\DataMappers\TaskSqlDataMapper;
+use Project\Infrastructure\Tasks\Task;
 use RuntimeException;
 
 /**
@@ -32,7 +38,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
             IIdAccessorRegistry::class,
             IIdGeneratorRegistry::class,
             IUnitOfWork::class,
-            // Add your repository classes here
+            [IRepository::class => Tasks::class]
         ];
     }
 
@@ -70,10 +76,23 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
      *
      * @param IContainer $container The container to bind to
      * @param IUnitOfWork $unitOfWork The unit of work to use in repositories
+     * @throws IocException Thrown if there was an error resolving the connection pool
+     * @throws RuntimeException Thrown if there was an error getting the connections from the pool
      */
     private function bindRepositories(IContainer $container, IUnitOfWork $unitOfWork)
     {
-        // Bind your repositories here
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = $container->resolve(ConnectionPool::class);
+        $dataMapper = new TaskSqlDataMapper(
+            $connectionPool->getReadConnection(),
+            $connectionPool->getWriteConnection()
+        );
+        $repository = new Repository(Task::class, $dataMapper, $unitOfWork);
+
+        // Bind this just for the task controller
+        $container->for(Tasks::class, function (IContainer $container) use ($repository) {
+            $container->bindInstance(IRepository::class, $repository);
+        });
     }
 
     /**

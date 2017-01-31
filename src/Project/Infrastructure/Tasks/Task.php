@@ -1,5 +1,5 @@
 <?php
-namespace Project\Infrastructure;
+namespace Project\Infrastructure\Tasks;
 
 use Opulence\Orm\IEntity;
 
@@ -9,10 +9,10 @@ use Opulence\Orm\IEntity;
 class Task implements IEntity
 {
     /** @var string The Id of the task */
-    private $id = "";
+    private $id = '';
     /** @var string The text of the task */
-    private $text = "";
-    
+    private $text = '';
+
     /**
      * @param string $id The Id of the task
      * @param string $text The text of the task
@@ -22,22 +22,22 @@ class Task implements IEntity
         $this->setId($id);
         $this->setText($text);
     }
-    
+
     public function getId() : string
     {
         return $this->id;
     }
-    
+
     public function getText() : string
     {
         return $this->text;
     }
-    
+
     public function setId($id) : void
     {
         $this->id = $id;
     }
-    
+
     public function setText(string $text) : void
     {
         $this->text = $text;

@@ -9,5 +9,7 @@ use Opulence\Routing\Router;
  * @var Router $router
  */
 $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controllers'], function (Router $router) {
-    $router->get('/', 'Example@showHomePage', ['name' => 'home']);
+    $router->get('/', 'Tasks@showHome', ['name' => 'home']);
+    $router->post('/', 'Tasks@addTask', ['name' => 'addTask']);
+    $router->delete('/:taskId', 'Tasks@deleteTask', ['name' => 'deleteTask']);
 });
