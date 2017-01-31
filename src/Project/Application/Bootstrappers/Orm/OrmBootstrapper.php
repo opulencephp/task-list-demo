@@ -14,6 +14,7 @@ use Opulence\Orm\Ids\Accessors\IdAccessorRegistry;
 use Opulence\Orm\Ids\Accessors\IIdAccessorRegistry;
 use Opulence\Orm\Ids\Generators\IdGeneratorRegistry;
 use Opulence\Orm\Ids\Generators\IIdGeneratorRegistry;
+use Opulence\Orm\Ids\Generators\IntSequenceIdGenerator;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Orm\Repositories\IRepository;
 use Opulence\Orm\Repositories\Repository;
@@ -112,6 +113,6 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
      */
     private function registerIdGenerators(IIdGeneratorRegistry $idGeneratorRegistry)
     {
-        // Register your Id generators for classes that will be managed by the unit of work
+        $idGeneratorRegistry->registerIdGenerator(Task::class, IntSequenceIdGenerator());
     }
 }
