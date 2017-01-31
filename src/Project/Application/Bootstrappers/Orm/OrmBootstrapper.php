@@ -113,6 +113,6 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
      */
     private function registerIdGenerators(IIdGeneratorRegistry $idGeneratorRegistry)
     {
-        $idGeneratorRegistry->registerIdGenerator(Task::class, new IntSequenceIdGenerator());
+        $idGeneratorRegistry->registerIdGenerator(Task::class, new IntSequenceIdGenerator('id_seq'));
     }
 }
